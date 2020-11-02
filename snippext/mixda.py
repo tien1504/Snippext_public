@@ -15,7 +15,7 @@ from .train_util import *
 from .dataset import *
 from tensorboardX import SummaryWriter
 from transformers import AdamW, get_linear_schedule_with_warmup
-from apex import amp
+#from apex import amp
 
 # criterion for tagging
 tagging_criterion = nn.CrossEntropyLoss(ignore_index=0)

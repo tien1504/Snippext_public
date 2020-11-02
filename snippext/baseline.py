@@ -13,7 +13,7 @@ from .dataset import *
 from .train_util import *
 from tensorboardX import SummaryWriter
 from transformers import AdamW, get_linear_schedule_with_warmup
-from apex import amp
+#from apex import amp
 
 def train(model, train_set, optimizer, scheduler=None, batch_size=32, fp16=False):
     """Perfrom one epoch of the training process.
