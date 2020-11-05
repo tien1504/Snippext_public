@@ -44,20 +44,13 @@ class IndexBuilder(object):
         self.all_spans = list()
         self.span_freqs = list()
         self.avg_senti = dict()
-        print('aaaa')
         if self.task == 'classification':
             # sentiment sensitive
-            print('1111')
             self.calc_senti_score()
-        print('2222')
         self.tokenizer = get_tokenizer(lm=lm)
-        print('3333')
         self.init_token_index(idf_dict)
-        print('4444')
         self.init_span_index(bert_path=bert_path)
-        print('5555')
         self.index_token_replacement()
-        print('6666')
 
     def init_token_index(self, idf_dict):
         oov_th = math.log(1e8)
@@ -82,13 +75,10 @@ class IndexBuilder(object):
         if bert_path is None:
             bert_model = BertModel.from_pretrained('bert-base-uncased', output_hidden_states=True)
         else:
-            print('7777')
             model_state_dict = torch.load(bert_path)
-            print('8888')
             bert_model = BertModel.from_pretrained('bert-base-uncased',
                     state_dict=model_state_dict,
                     output_hidden_states=True)
-            print('9999')
         bert_model.eval()
 
         aspect_dict = dict()
@@ -215,7 +205,7 @@ class IndexBuilder(object):
                         opinion_raw_token_list.append(op_raw)
                     else:
                         opinion_dict[op_raw]['document_freq'] += 1
-        print('0000')
+
         as_ids = []
         op_ids = []
         # Pad to max length and convert to ids
@@ -236,7 +226,7 @@ class IndexBuilder(object):
             X_op = torch.LongTensor(op_ids)
             op_encoded_layers = bert_model(X_op)[2]
             X_op = op_encoded_layers[-2].detach()
-        print('bbbb')
+
         # Compute the dot-product between all pairs of spans
         for i in range(len(aspect_token_list)):
             if sim_token == 'all':
@@ -269,7 +259,7 @@ class IndexBuilder(object):
                         aspect_dict[aspect_raw_token_list[idx]]['bert_length'])
                 else:
                     break
-        print('cccc')
+
         for i in range(len(opinion_token_list)):
             if sim_token == 'all':
                 # using all tokens
@@ -300,7 +290,6 @@ class IndexBuilder(object):
                         opinion_dict[opinion_raw_token_list[idx]]['bert_length'])
                 else:
                     break
-        print('dddd')
         self.index['span'] =  {'aspect': aspect_dict, 'opinion': opinion_dict}
 
 
@@ -484,5 +473,4 @@ if __name__ == '__main__':
                       config['task_type'],
                       hp.bert_path,
                       lm=hp.lm)
-    
-    #ib.dump_index(hp.index_output_path)
+    ib.dump_index(hp.index_output_path)
