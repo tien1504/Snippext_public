@@ -381,7 +381,8 @@ def initialize_and_train(task_config,
         model = MultiTaskNet([task_config], device,
                          hp.finetuning, bert_path=hp.bert_path).cuda()
         optimizer = AdamW(model.parameters(), lr = hp.lr)
-        model, optimizer = amp.initialize(model, optimizer, opt_level='O2')
+        if hp.fp16:
+            model, optimizer = amp.initialize(model, optimizer, opt_level='O2')
 
     # learning rate scheduler
     num_steps = (len(trainset) // hp.batch_size * 2) * hp.n_epochs
